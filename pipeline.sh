@@ -23,10 +23,110 @@ set -Eeuo pipefail
 # EXIT_VALUE - Used to store the script exit value - adjusted by the fail().       #
 # -------------------------------------------------------------------------------- #
 
+INSTALL_PACKAGE='pur'
 TEST_COMMAND='pur -dfzr'
 FILE_TYPE_SEARCH_PATTERN='No Magic String'
 FILE_NAME_SEARCH_PATTERN='\requirements.txt$'
 EXIT_VALUE=0
+
+# -------------------------------------------------------------------------------- #
+# Install                                                                          #
+# -------------------------------------------------------------------------------- #
+# Install the required tooling.                                                    #
+# -------------------------------------------------------------------------------- #
+
+function install_prerequisites
+{
+    python -m pip install --quiet --upgrade pip
+    pip install --quiet "${INSTALL_PACKAGE}"
+
+    VERSION=$("${INSTALL_PACKAGE}" --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+    BANNER="Scanning all requirements.txt with ${INSTALL_PACKAGE} (version: ${VERSION})"
+}
+
+# -------------------------------------------------------------------------------- #
+# Check                                                                            #
+# -------------------------------------------------------------------------------- #
+# Check a specific file.                                                           #
+# -------------------------------------------------------------------------------- #
+
+function check()
+{
+    local filename="$1"
+    local errors
+
+    file_count=$((file_count+1))
+
+    # We have to disable exit on error as we are using non-standard exit codes
+    set +e
+    # shellcheck disable=SC2086
+    errors=$( ${TEST_COMMAND} "${filename}" "${SKIP_PACKAGES}" 2>&1 )
+    ret_code=$?
+    set -e
+
+    if [[ $ret_code == 10 ]]; then
+        success "${filename}"
+        ok_count=$((ok_count+1))
+    else
+        errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
+        fail "${filename}" "${errors}"
+        fail_count=$((fail_count+1))
+    fi
+}
+
+# -------------------------------------------------------------------------------- #
+# Scan Files                                                                       #
+# -------------------------------------------------------------------------------- #
+# Locate all of the relevant files within the repo and process compatible ones.    #
+# -------------------------------------------------------------------------------- #
+
+function scan_files()
+{
+    while IFS= read -r filename
+    do
+        if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
+            check "${filename}"
+        elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
+            check "${filename}"
+        fi
+    done < <(git ls-files | sort -zVd)
+}
+
+# -------------------------------------------------------------------------------- #
+# Handle Parameters                                                                #
+# -------------------------------------------------------------------------------- #
+# Handle any parameters from the pipeline.                                         #
+# -------------------------------------------------------------------------------- #
+
+function handle_parameters
+{
+    if [[ -n "${SKIPLIST-}" ]]; then
+        SKIP_PACKAGES="-s ${SKIPLIST}"
+    else
+        SKIP_PACKAGES=""
+    fi
+
+    if [[ -n "${SHOW_ERRORS-}" ]]; then
+        if [[ "${SHOW_ERRORS}" != true ]]; then
+            SHOW_ERRORS=false
+        fi
+    else
+        SHOW_ERRORS=false
+    fi
+
+    if [[ -n "${REPORT_ONLY-}" ]]; then
+        if [[ "${REPORT_ONLY}" != true ]]; then
+            REPORT_ONLY=false
+        fi
+    else
+        REPORT_ONLY=false
+    fi
+
+    if [[ "${REPORT_ONLY}" == true ]]; then
+        center_text "WARNING: REPORT ONLY MODE"
+        draw_line
+    fi
+}
 
 # -------------------------------------------------------------------------------- #
 # Success                                                                          #
@@ -84,90 +184,6 @@ function skip()
     fi
 }
 
-# -------------------------------------------------------------------------------- #
-# Check                                                                            #
-# -------------------------------------------------------------------------------- #
-# Check a specific file.                                                           #
-# -------------------------------------------------------------------------------- #
-
-function check()
-{
-    local filename="$1"
-    local errors
-    local flags
-
-    if [[ -n "${SKIPLIST-}" ]]; then
-        flags="-s ${SKIPLIST}"
-    else
-        flags=""
-    fi
-
-    file_count=$((file_count+1))
-
-    # We have to disable exit on error as we are using non-standard exit codes
-    set +e
-    # shellcheck disable=SC2086
-    errors=$( ${TEST_COMMAND} "${filename}" ${flags} 2>&1 )
-    ret_code=$?
-    set -e
-
-    if [[ $ret_code == 10 ]]; then
-        success "${filename}"
-        ok_count=$((ok_count+1))
-    else
-        errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
-        fail "${filename}" "${errors}"
-        fail_count=$((fail_count+1))
-    fi
-}
-
-# -------------------------------------------------------------------------------- #
-# Scan Files                                                                       #
-# -------------------------------------------------------------------------------- #
-# Locate all of the relevant files within the repo and process compatible ones.    #
-# -------------------------------------------------------------------------------- #
-
-function scan_files()
-{
-    while IFS= read -r filename
-    do
-        if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
-            check "${filename}"
-        elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
-            check "${filename}"
-        fi
-    done < <(git ls-files | sort -zVd)
-}
-
-# -------------------------------------------------------------------------------- #
-# Handle Parameters                                                                #
-# -------------------------------------------------------------------------------- #
-# Handle any parameters from the pipeline.                                         #
-# -------------------------------------------------------------------------------- #
-
-function handle_parameters
-{
-    if [[ -n "${SHOW_ERRORS-}" ]]; then
-        if [[ "${SHOW_ERRORS}" != true ]]; then
-            SHOW_ERRORS=false
-        fi
-    else
-        SHOW_ERRORS=false
-    fi
-
-    if [[ -n "${DRY_RUN-}" ]]; then
-        if [[ "${DRY_RUN}" != true ]]; then
-            DRY_RUN=false
-        fi
-    else
-        DRY_RUN=false
-    fi
-
-    if [[ "${DRY_RUN}" == true ]]; then
-        center_text "WARNING: DRY RUN MODE"
-        draw_line
-    fi
-}
 
 # -------------------------------------------------------------------------------- #
 # Center Text                                                                      #
@@ -177,10 +193,12 @@ function handle_parameters
 
 function center_text()
 {
-    textsize=${#1}
+    local message="${1:-}"
+
+    textsize=${#message}
     span=$(((screen_width + textsize) / 2))
 
-    printf '%*s\n' "${span}" "$1"
+    printf '%*s\n' "${span}" "${message}"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -244,23 +262,6 @@ function setup
 }
 
 # -------------------------------------------------------------------------------- #
-# Install                                                                          #
-# -------------------------------------------------------------------------------- #
-# Install the required tooling.                                                    #
-# -------------------------------------------------------------------------------- #
-
-function install_prerequisites
-{
-    local module_name='pur'
-
-    python -m pip install --quiet --upgrade pip
-    pip install --quiet ${module_name}
-
-    VERSION=$(pur --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-    BANNER="Scanning all requirements.txt with ${module_name} (version: ${VERSION})"
-}
-
-# -------------------------------------------------------------------------------- #
 # Main()                                                                           #
 # -------------------------------------------------------------------------------- #
 # This is the actual 'script' and the functions/sub routines are called in order.  #
@@ -273,7 +274,7 @@ handle_parameters
 scan_files
 footer
 
-if [[ "${DRY_RUN}" == true ]]; then
+if [[ "${REPORT_ONLY}" == true ]]; then
     EXIT_VALUE=0
 fi
 
