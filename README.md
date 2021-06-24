@@ -78,9 +78,9 @@ The following environment variables can be set in order to customise the script.
 
 | Name          | Purpose |
 | ------------- | ------- |
-| SKIPLIST      | A comma separated list of packages to skip. |
 | REPORT_ONLY   | Generate the report but do not fail the build even if an error occurred. |
 | SHOW_ERRORS   | Show the actual errors instead of just which files had errors. |
+| SKIPLIST      | A comma separated list of packages to skip. |
 
 You can use any combination of the above settings.
 
