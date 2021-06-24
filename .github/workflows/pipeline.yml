@@ -15,8 +15,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Run Pur
-        env:
-          SKIPLIST: 'rubocop'
         run: ./pipeline.sh      
   awesomebot:
     name: Awesomebot tests

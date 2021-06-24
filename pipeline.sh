@@ -60,14 +60,9 @@ function check()
     # We have to disable exit on error as we are using non-standard exit codes
     set +e
     # shellcheck disable=SC2086
-echo "${TEST_COMMAND} ${filename} ${SKIP_PACKAGES}"
-
     errors=$( ${TEST_COMMAND} "${filename}" ${SKIP_PACKAGES} 2>&1 )
     ret_code=$?
     set -e
-
-echo "Errors: $errors"
-echo "$ret_code"
 
     if [[ $ret_code == 10 ]]; then
         success "${filename}"
