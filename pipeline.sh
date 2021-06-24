@@ -64,6 +64,9 @@ function check()
     ret_code=$?
     set -e
 
+echo "Errors: $errors"
+echo "$ret_code"
+
     if [[ $ret_code == 10 ]]; then
         success "${filename}"
         ok_count=$((ok_count+1))
