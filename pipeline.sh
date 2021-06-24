@@ -62,7 +62,7 @@ function check()
     # shellcheck disable=SC2086
 echo "${TEST_COMMAND} ${filename} ${SKIP_PACKAGES}"
 
-    errors=$( ${TEST_COMMAND} "${filename}${SKIP_PACKAGES}" 2>&1 )
+    errors=$( ${TEST_COMMAND} "${filename}" ${SKIP_PACKAGES} 2>&1 )
     ret_code=$?
     set -e
 
@@ -106,7 +106,7 @@ function scan_files()
 function handle_parameters
 {
     if [[ -n "${SKIPLIST-}" ]]; then
-        SKIP_PACKAGES=" -s ${SKIPLIST}"
+        SKIP_PACKAGES="-s ${SKIPLIST}"
     else
         SKIP_PACKAGES=""
     fi
