@@ -27,8 +27,8 @@ set -Eeuo pipefail
 
 INSTALL_COMMAND="pip install --quiet pur"
 
-TEST_COMMAND='bandit'
-TEST_FLAHS='-dfzr'
+TEST_COMMAND='pur'
+TEST_FLAGS='-dfzr'
 FILE_TYPE_SEARCH_PATTERN='^Python script'
 FILE_NAME_SEARCH_PATTERN='\.py$'
 
@@ -43,8 +43,6 @@ CURRENT_STAGE=0
 
 function install_prerequisites
 {
-    local CMD
-
     stage "Install Prerequisites"
 
     python -m pip install --quiet --upgrade pip
@@ -90,7 +88,7 @@ function check()
     # We have to disable exit on error as we are using non-standard exit codes
     set +e
     # shellcheck disable=SC2086
-    errors=$( ${TEST_COMMAND} ${TEST_GLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 )
+    errors=$( ${TEST_COMMAND} ${TEST_FLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 )
     ret_code=$?
     set -e
 
