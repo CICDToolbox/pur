@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/pur/compare/v0.1.0...HEAD)
 
-- testing [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+- update [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+
+- testing [`[d0215ea]`](https://github.com/CICDToolbox/pur/commit/d0215ea28051df3d755321521b4261f0590b697c)
 
 - testing [`[a86f79c]`](https://github.com/CICDToolbox/pur/commit/a86f79c221f1985e5f05b3e9862a964e20d227c5)
 

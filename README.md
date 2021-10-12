@@ -1,40 +1,33 @@
-<h1 align="center">
-    <a href="https://github.com/WolfSoftware">
-        <img src="https://raw.githubusercontent.com/WolfSoftware/branding/master/images/general/banners/64/black-and-white.png" alt="Wolf Software Logo" />
+<p align="center">
+    <a href="https://github.com/CICDToolbox">
+        <img src="https://cdn.wolfsoftware.com/assets/images/github/organisations/cicdtoolbox/black-and-white-circle-256.png" alt="CICDToolbox Logo" />
     </a>
     <br />
-    Pur for CI/CD Pipelines
-</h1>
-
-<p align="center">
     <a href="https://github.com/CICDToolbox/pur/actions/workflows/pipeline.yml">
-        <img src="https://img.shields.io/github/workflow/status/CICDToolbox/pur/pipeline/master?logo=github&logoColor=white&style=for-the-badge" alt="Github Build Status">
-    </a>
-    <a href="https://travis-ci.com/CICDToolbox/pur">
-        <img src="https://img.shields.io/travis/com/CICDToolbox/pur/master?style=for-the-badge&logo=travis" alt="Travis Build Status">
+        <img src="https://img.shields.io/github/workflow/status/CICDToolbox/pur/pipeline/master?style=for-the-badge" alt="Github Build Status">
     </a>
     <a href="https://github.com/CICDToolbox/pur/releases/latest">
-        <img src="https://img.shields.io/github/v/release/CICDToolbox/pur?color=blue&style=for-the-badge&logo=github&logoColor=white&label=Latest%20Release" alt="Release">
+        <img src="https://img.shields.io/github/v/release/CICDToolbox/pur?color=blue&label=Latest%20Release&style=for-the-badge" alt="Release">
     </a>
     <a href="https://github.com/CICDToolbox/pur/releases/latest">
-        <img src="https://img.shields.io/github/commits-since/CICDToolbox/pur/latest.svg?color=blue&style=for-the-badge&logo=github&logoColor=white" alt="Commits since release">
+        <img src="https://img.shields.io/github/commits-since/CICDToolbox/pur/latest.svg?color=blue&style=for-the-badge" alt="Commits since release">
     </a>
     <br />
     <a href=".github/CODE_OF_CONDUCT.md">
-        <img src="https://img.shields.io/badge/Code%20of%20Conduct-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
+        <img src="https://img.shields.io/badge/Code%20of%20Conduct-blue?style=for-the-badge" />
     </a>
     <a href=".github/CONTRIBUTING.md">
-        <img src="https://img.shields.io/badge/Contributing-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
+        <img src="https://img.shields.io/badge/Contributing-blue?style=for-the-badge" />
     </a>
     <a href=".github/SECURITY.md">
-        <img src="https://img.shields.io/badge/Report%20Security%20Concern-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
+        <img src="https://img.shields.io/badge/Report%20Security%20Concern-blue?style=for-the-badge" />
     </a>
     <a href="https://github.com/CICDToolbox/pur/issues">
-        <img src="https://img.shields.io/badge/Get%20Support-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
+        <img src="https://img.shields.io/badge/Get%20Support-blue?style=for-the-badge" />
     </a>
     <br />
-    <a href="https://github.com/TGWolf">
-        <img src="https://img.shields.io/badge/Created%20by%20Wolf-black?style=for-the-badge" />
+    <a href="https://wolfsoftware.com">
+        <img src="https://img.shields.io/badge/Created%20by%20Wolf%20Software-blue?style=for-the-badge" />
     </a>
 </p>
 
@@ -42,11 +35,9 @@
 
 A tool to check your Python projects requirements.txt for updates in CI/CD pipelines using [pur](https://pypi.org/project/pur/).
 
-This tool has been written and tested using both GitHub Actions and Travis CI, but it should work out of the box with a lot of other CI/CD tools.
+This tool has been written and tested using GitHub Actions but it should work out of the box with a lot of other CI/CD tools.
 
 ## Usage
-
-### GitHub Actions
 
 ```yml
 on: [push, pull_request]
@@ -59,32 +50,21 @@ jobs:
       with:
         ruby-version: 3.9
     - name: Run Pur
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh | bash
-```
-
-### Travis CI
-
-```yml
-language: python
-python: 3.9
-
-script:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh | bash
+      run: bash <(curl -s https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh)
 ```
 
 ### Other Options
 
 The following environment variables can be set in order to customise the script.
 
-| Name          | Purpose |
-| ------------- | ------- |
-| REPORT_ONLY   | Generate the report but do not fail the build even if an error occurred. |
-| SHOW_ERRORS   | Show the actual errors instead of just which files had errors. |
-| SKIPLIST      | A comma separated list of packages to skip. |
+| Name          | Purpose | Default Value |
+| ------------- | ------- | ------------- |
+| EXCLUDE_FILES | A comma separated list of files to exclude from being scanned. | Unset |
+| REPORT_ONLY   | Generate the report but do not fail the build even if an error occurred. | False | 
+| SHOW_ERRORS   | Show the actual errors instead of just which files had errors. | False | 
+| SKIPLIST      | A comma separated list of packages to skip.  | Unset |
 
 You can use any combination of the above settings.
-
-#### GitHub Actions
 
 ```yml
 on: [push, pull_request]
@@ -101,35 +81,13 @@ jobs:
         REPORT_ONLY: true
         SHOW_ERRORS: true
         SKIPLIST: 'pur'
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh | bash
-```
-
-#### Travis CI
-
-```yml
-language: python
-python: 3.9
-
-env:
-  - REPORT_ONLY=true
-  - SHOW_ERRORS=true
-  - SKIPLIST='pur'
-
-script:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh | bash
+      run: bash <(curl -s https://raw.githubusercontent.com/CICDToolbox/pur/master/pipeline.sh)
 ```
 
 ## Example Output
 
 This is an example of the output report generated by this tool, this is the actual output from the tool running against itself.
 ```
---------------------------------------------------------------------------------
-            Scanning all requirements.txt with pur (version: 5.4.1)
---------------------------------------------------------------------------------
- [  OK  ] Processing successful for tests/requirements.txt
---------------------------------------------------------------------------------
-                     Total: 1, OK: 1, Failed: 0, Skipped: 0
---------------------------------------------------------------------------------
 ```
 
 ## File Identification
@@ -143,8 +101,3 @@ Target files are identified using the following code:
 
 ## Show Support
 
-<p>
-    <a href="https://ko-fi.com/wolfsoftware">
-        <img src="https://img.shields.io/badge/Ko%20Fi-blue?style=for-the-badge&logo=ko-fi&logoColor=white" />
-    </a>
-</p>
