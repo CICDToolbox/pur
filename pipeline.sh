@@ -19,6 +19,7 @@ set -Eeuo pipefail
 # -------------------------------------------------------------------------------- #
 # INSTALL_COMMAND - The command to execute to do the install.                      #
 # TEST_COMMAND - The command to execute to perform the test.                       #
+# TEST_FLAGS - The flags to password to the test command.                          #
 # FILE_TYPE_SEARCH_PATTERN - The pattern used to match file types.                 #
 # FILE_NAME_SEARCH_PATTERN - The pattern used to match file names.                 #
 # EXIT_VALUE - Used to store the script exit value - adjusted by the fail().       #
