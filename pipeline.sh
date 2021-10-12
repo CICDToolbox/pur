@@ -29,8 +29,8 @@ INSTALL_COMMAND="pip install --quiet pur"
 
 TEST_COMMAND='pur'
 TEST_FLAGS='-dfzr'
-FILE_TYPE_SEARCH_PATTERN='^Python script'
-FILE_NAME_SEARCH_PATTERN='\.py$'
+FILE_TYPE_SEARCH_PATTERN='No Magic String'
+FILE_NAME_SEARCH_PATTERN='\requirements.txt$'
 
 EXIT_VALUE=0
 CURRENT_STAGE=0
