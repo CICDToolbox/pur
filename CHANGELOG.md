@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/pur/compare/v0.1.0...HEAD)
 
-- New logo [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+- update readme [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+
+- New logo [`[e35b6bb]`](https://github.com/CICDToolbox/pur/commit/e35b6bb87fe2cb0d6d4ff9cd6ddf970ed4eac962)
 
 - New logo [`[65519b6]`](https://github.com/CICDToolbox/pur/commit/65519b66eacf6506d18fd2d0eac35ec2baa9f407)
 
