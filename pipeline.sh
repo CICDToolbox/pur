@@ -94,7 +94,7 @@ function check()
         ok_count=$((ok_count+1))
     else
         errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
-        fail "${filename}" "Error Code:${ret_code}\n${errors}"
+        fail "${filename}" "${errors}"
         fail_count=$((fail_count+1))
     fi
     set -e
