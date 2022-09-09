@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/pur/compare/v0.1.0...HEAD)
 
-- Fix find command [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+- update [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+
+- Fix find command [`[3fcd36b]`](https://github.com/CICDToolbox/pur/commit/3fcd36b85a464528ae0fc1f4795e0c6877caa678)
 
 - Fix find command [`[707d0ab]`](https://github.com/CICDToolbox/pur/commit/707d0ab3683669908bab7dca60dc7a876d685141)
 

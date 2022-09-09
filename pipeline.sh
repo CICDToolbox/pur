@@ -29,7 +29,7 @@ set -Eeuo pipefail
 INSTALL_COMMAND="pip install --quiet pur"
 
 TEST_COMMAND='pur'
-TEST_FLAGS='-dfzr'
+TEST_FLAGS='-dzr'
 FILE_TYPE_SEARCH_PATTERN='No Magic String'
 FILE_NAME_SEARCH_PATTERN='\requirements.txt$'
 
@@ -98,7 +98,7 @@ function check()
         ok_count=$((ok_count+1))
     else
         errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
-        fail "${filename}" "${errors}"
+        fail "${filename}" "Error Code:${ret_code}\n${errors}"
         fail_count=$((fail_count+1))
     fi
 }
