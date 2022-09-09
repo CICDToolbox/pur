@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/pur/compare/v0.1.0...HEAD)
 
-- update [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+- update - as exit code has changed in version 7 of pur [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+
+- update [`[3b18d82]`](https://github.com/CICDToolbox/pur/commit/3b18d82c6ec51640c1956ee547e45370463708c6)
 
 - Fix find command [`[3fcd36b]`](https://github.com/CICDToolbox/pur/commit/3fcd36b85a464528ae0fc1f4795e0c6877caa678)
 

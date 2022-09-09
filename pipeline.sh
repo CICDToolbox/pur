@@ -86,14 +86,18 @@ function check()
 
     file_count=$((file_count+1))
 
+    if errors=$( ${TEST_COMMAND} "${filename}" ${FLAG_SET} 2>&1 ); then
+        success "${filename}"
+        ok_count=$((ok_count+1))
+    else
+        fail "${filename}" "${errors}"
+        fail_count=$((fail_count+1))
+    fi
+
     # We have to disable exit on error as we are using non-standard exit codes
     set +e
     # shellcheck disable=SC2086
-    errors=$( ${TEST_COMMAND} ${TEST_FLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 )
-    ret_code=$?
-    set -e
-
-    if [[ $ret_code == 10 ]]; then
+    if errors=$( ${TEST_COMMAND} ${TEST_FLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 )
         success "${filename}"
         ok_count=$((ok_count+1))
     else
