@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - Make errors easier to see and default to showing errors [`[head]`](https://github.com/CICDToolbox/pur/commit/)
 
+- Make errors easier to see and default to showing errors [`[927d269]`](https://github.com/CICDToolbox/pur/commit/927d2690daab6ea184ad6d14aba6c1c1cf412032)
+
 - update - as exit code has changed in version 7 of pur [`[b780e26]`](https://github.com/CICDToolbox/pur/commit/b780e26939a0028f13bb00908a2e1bcfe273dc2c)
 
 - update - as exit code has changed in version 7 of pur [`[b7aefa0]`](https://github.com/CICDToolbox/pur/commit/b7aefa06ae7835bd86ac4a0e19fa7dc0c4c02391)

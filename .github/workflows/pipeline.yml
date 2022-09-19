@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ '3.6', '3.7', '3.8', '3.9' ]
+        python: [ '3.7', '3.8', '3.9', '3.10' ]
     name: Build Test on Python ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v2
@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Run Pur
-        run: ./pipeline.sh      
+        run: ./pipeline.sh
   awesomebot:
     name: Awesomebot
     runs-on: ubuntu-latest
