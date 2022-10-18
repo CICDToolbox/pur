@@ -74,33 +74,6 @@ function get_version_information
 }
 
 # -------------------------------------------------------------------------------- #
-# Check                                                                            #
-# -------------------------------------------------------------------------------- #
-# Check a specific file.                                                           #
-# -------------------------------------------------------------------------------- #
-
-function check()
-{
-    local filename="$1"
-    local errors
-
-    file_count=$((file_count+1))
-
-    # We have to disable exit on error as we are using non-standard exit codes
-    set +e
-    # shellcheck disable=SC2086
-    if errors=$( ${TEST_COMMAND} ${TEST_FLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 ); then
-        success "${filename}"
-        ok_count=$((ok_count+1))
-    else
-        errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
-        fail "${filename}" "${errors}"
-        fail_count=$((fail_count+1))
-    fi
-    set -e
-}
-
-# -------------------------------------------------------------------------------- #
 # Is Excluded                                                                      #
 # -------------------------------------------------------------------------------- #
 # Check to see if the filename is in the exclude_list.                             #
@@ -119,6 +92,39 @@ function is_excluded()
 }
 
 # -------------------------------------------------------------------------------- #
+# Check                                                                            #
+# -------------------------------------------------------------------------------- #
+# Check a specific file.                                                           #
+# -------------------------------------------------------------------------------- #
+
+function check()
+{
+    local filename="$1"
+    local errors
+
+    if is_excluded "${filename}"; then
+        skip "${filename}"
+        skip_count=$((skip_count+1))
+    else
+        file_count=$((file_count+1))
+
+        # We have to disable exit on error as we are using non-standard exit codes
+        set +e
+        # shellcheck disable=SC2086
+        if errors=$( ${TEST_COMMAND} ${TEST_FLAGS} "${filename}" ${SKIP_PACKAGES} 2>&1 ); then
+            success "${filename}"
+            ok_count=$((ok_count+1))
+        else
+            errors=$(echo "${errors}" | tail -n+2 | sed '/^$/d')
+            fail "${filename}" "${errors}"
+            fail_count=$((fail_count+1))
+        fi
+        set -e
+    fi
+}
+
+
+# -------------------------------------------------------------------------------- #
 # Scan Files                                                                       #
 # -------------------------------------------------------------------------------- #
 # Locate all of the relevant files within the repo and process compatible ones.    #
@@ -128,15 +134,10 @@ function scan_files()
 {
     while IFS= read -r filename
     do
-        if is_excluded "${filename}"; then
-            skip "${filename}"
-            skip_count=$((skip_count+1))
-        else
-            if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
-                check "${filename}"
-            elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
-                check "${filename}"
-            fi
+        if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
+            check "${filename}"
+        elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
+            check "${filename}"
         fi
     done < <(find . -type f -not -path "./.git/*" | sed 's|^./||' | sort -Vf)
 }
@@ -161,6 +162,14 @@ function handle_parameters
         parameters=true
     else
         SHOW_ERRORS=true
+    fi
+
+    if [[ -n "${SHOW_SKIPPED-}" ]] && [[ "${SHOW_SKIPPED}" = true ]]; then
+        SHOW_SKIPPED=true
+        echo " Show skipped: false"
+        parameters=true
+    else
+        SHOW_SKIPPED=false
     fi
 
     if [[ -n "${EXCLUDE_FILES-}" ]]; then
@@ -253,9 +262,11 @@ function skip()
 {
     local message="${1:-}"
 
-    file_count=$((file_count+1))
-    if [[ -n "${message}" ]]; then
-        printf ' [ %s%sSkip%s ] %s\n' "${bold}" "${skipped}" "${normal}" "${message}"
+    if [[ "${SHOW_SKIPPED}" == true ]]; then
+        file_count=$((file_count+1))
+        if [[ -n "${message}" ]]; then
+            printf ' [ %s%sSkip%s ] Skipping %s\n' "${bold}" "${skipped}" "${normal}" "${message}"
+        fi
     fi
 }
 
