@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/pur/compare/v0.1.0...HEAD)
 
-- Change the logic for skipping and showing skipped files [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+- Remove false positives [`[head]`](https://github.com/CICDToolbox/pur/commit/)
+
+- Change the logic for skipping and showing skipped files [`[e87ecb0]`](https://github.com/CICDToolbox/pur/commit/e87ecb05a02b018285680cdd229067fa9d4194d9)
 
 - Make errors easier to see and default to showing errors [`[95e1024]`](https://github.com/CICDToolbox/pur/commit/95e10240791104d054cb16f073cade69ec314906)
 
