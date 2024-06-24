@@ -47,7 +47,7 @@ BANNER_NAME="${TEST_COMMAND[*]}"
 FILE_TYPE_SEARCH_PATTERN='No Magic String'
 
 # File name to match [Regex based]
-FILE_NAME_SEARCH_PATTERN='\requirements.txt$'
+FILE_NAME_SEARCH_PATTERN='\requirements*.txt$'
 
 # Set where to look for files.
 SCAN_ROOT='.'
@@ -270,7 +270,7 @@ function install_prerequisites()
                 fail "${CMD[*]}" "${errors}" true
                 exit "${EXIT_VALUE}"
             fi
-        done < <(find . -name 'requirements.txt' -type f -not -path "./.git/*" | sed 's|^./||' | sort -Vf || true)
+        done < <(find . -name 'requirements*.txt' -type f -not -path "./.git/*" | sed 's|^./||' | sort -Vf || true)
     fi
 }
 
